@@ -53,91 +53,98 @@ void chessboard_to_fen(char fen[], ChessGame *game) {
 }
 
 bool is_valid_pawn_move(char piece, int src_row, int src_col, int dest_row, int dest_col, ChessGame *game) {
-    //check out of board
-    if(out_of_board(src_row, src_col, dest_row, dest_col)){
-        return false;
-    }
-    //for black
-    if(piece == 'p'){
-        //sw diag
-        if((dest_row == src_row + 1) && (dest_col == src_col - 1)){
-            if(game->chessboard[dest_row][dest_col] == '.'){
-                return false;
-            }
-            return true;
-        }
-        //se diag
-        if((dest_row == src_row + 1) && (dest_col == src_col + 1)){
-            if(game->chessboard[dest_row][dest_col] == '.'){
-                return false;
-            }
-            return true;
-        }
-        //s find
-        if((dest_row == src_row + 1) && (dest_col == src_col)){
-            if((game->chessboard[dest_row][dest_col]) != '.'){
-                return false;
-            }
-            else{
-                return true;
-            }
-        }
-        if((dest_row == src_row + 2) && (dest_col == src_col)){
-            if((game->chessboard[dest_row][dest_col]) != '.'){
-                return false;
-            }
-            else  if((game->chessboard[src_row+1][src_col]) != '.'){
-                return false;
-            }
-            else{
-                return true;
-            }
-        }
-        return false;
-    }
+    (void)piece;
+    (void)src_row;
+    (void)src_col;
+    (void)dest_row;
+    (void)dest_col;
+    (void)game;
+    return false;
+    // //check out of board
+    // if(out_of_board(src_row, src_col, dest_row, dest_col)){
+    //     return false;
+    // }
+    // //for black
+    // if(piece == 'p'){
+    //     //sw diag
+    //     if((dest_row == src_row + 1) && (dest_col == src_col - 1)){
+    //         if(game->chessboard[dest_row][dest_col] == '.'){
+    //             return false;
+    //         }
+    //         return true;
+    //     }
+    //     //se diag
+    //     if((dest_row == src_row + 1) && (dest_col == src_col + 1)){
+    //         if(game->chessboard[dest_row][dest_col] == '.'){
+    //             return false;
+    //         }
+    //         return true;
+    //     }
+    //     //s find
+    //     if((dest_row == src_row + 1) && (dest_col == src_col)){
+    //         if((game->chessboard[dest_row][dest_col]) != '.'){
+    //             return false;
+    //         }
+    //         else{
+    //             return true;
+    //         }
+    //     }
+    //     if((dest_row == src_row + 2) && (dest_col == src_col)){
+    //         if((game->chessboard[dest_row][dest_col]) != '.'){
+    //             return false;
+    //         }
+    //         else  if((game->chessboard[src_row+1][src_col]) != '.'){
+    //             return false;
+    //         }
+    //         else{
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
-    //for white
-    else if(piece == 'P'){
-        //nw
-        if((dest_row == src_row - 1) && (dest_col == src_col - 1)){
-            if(game->chessboard[dest_row][dest_col] == '.'){
-                return false;
-            }
-            return true;
-        }
-        //ne
-        if((dest_row == src_row - 1) && (dest_col == src_col + 1)){
-            if(game->chessboard[dest_row][dest_col] == '.'){
-                return false;
-            }
-            return true;
-        }
-        //n find
-        if((dest_row == src_row - 1) && (dest_col == src_col)){
-            if((game->chessboard[dest_row][dest_col]) != '.'){
-                return false;
-            }
-            else{
-                return true;
-            }
-        }
-        if((dest_row == src_row - 2) && (dest_col == src_col)){
-            if((game->chessboard[dest_row][dest_col]) != '.'){
-                return false;
-            }
-            else  if((game->chessboard[src_row-1][src_col]) != '.'){
-                return false;
-            }
-            else{
-                return true;
-            }
-        }
-        return false;
-    }
+    // //for white
+    // else if(piece == 'P'){
+    //     //nw
+    //     if((dest_row == src_row - 1) && (dest_col == src_col - 1)){
+    //         if(game->chessboard[dest_row][dest_col] == '.'){
+    //             return false;
+    //         }
+    //         return true;
+    //     }
+    //     //ne
+    //     if((dest_row == src_row - 1) && (dest_col == src_col + 1)){
+    //         if(game->chessboard[dest_row][dest_col] == '.'){
+    //             return false;
+    //         }
+    //         return true;
+    //     }
+    //     //n find
+    //     if((dest_row == src_row - 1) && (dest_col == src_col)){
+    //         if((game->chessboard[dest_row][dest_col]) != '.'){
+    //             return false;
+    //         }
+    //         else{
+    //             return true;
+    //         }
+    //     }
+    //     if((dest_row == src_row - 2) && (dest_col == src_col)){
+    //         if((game->chessboard[dest_row][dest_col]) != '.'){
+    //             return false;
+    //         }
+    //         else  if((game->chessboard[src_row-1][src_col]) != '.'){
+    //             return false;
+    //         }
+    //         else{
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
-    else{
-        return false;
-    }
+    // else{
+    //     return false;
+    // }
 }
 
 bool is_valid_rook_move(int src_row, int src_col, int dest_row, int dest_col, ChessGame *game) {
