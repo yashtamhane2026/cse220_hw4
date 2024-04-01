@@ -160,47 +160,52 @@ bool is_valid_rook_move(int src_row, int src_col, int dest_row, int dest_col, Ch
 }
 
 bool is_valid_knight_move(int src_row, int src_col, int dest_row, int dest_col) {
-    //check out of board dest
-    if(out_of_board(src_row, src_col, dest_row, dest_col)){
-        return false;
-    }
+    (void)src_row;
+    (void)src_col;
+    (void)dest_row;
+    (void)dest_col;
+    return false;
+    // //check out of board dest
+    // if(out_of_board(src_row, src_col, dest_row, dest_col)){
+    //     return false;
+    // }
 
-    //8 cases
-    //nl
-    if((dest_row == src_row - 2) && (dest_col == src_col - 1)){
-        return true;
-    }
-    //nr
-    else if((dest_row == src_row - 2) && (dest_col == src_col + 1)){
-        return true;
-    }
-    //wd
-    else if((dest_row == src_row + 1) && (dest_col == src_col - 2)){
-        return true;
-    }
-    //wu
-    else if((dest_row == src_row - 1) && (dest_col == src_col - 2)){
-        return true;
-    }
-    //sl
-    else if((dest_row == src_row + 2) && (dest_col == src_col - 1)){
-        return true;
-    }
-    //sr
-    else if((dest_row == src_row + 2) && (dest_col == src_col + 1)){
-        return true;
-    }
-    //eu
-    else if((dest_row == src_row - 1) && (dest_col == src_col + 2)){
-        return true;
-    }
-    //ed
-    else if((dest_row == src_row + 1) && (dest_col == src_col + 2)){
-        return true;
-    }
-    else{
-        return false;
-    }
+    // //8 cases
+    // //nl
+    // if((dest_row == src_row - 2) && (dest_col == src_col - 1)){
+    //     return true;
+    // }
+    // //nr
+    // else if((dest_row == src_row - 2) && (dest_col == src_col + 1)){
+    //     return true;
+    // }
+    // //wd
+    // else if((dest_row == src_row + 1) && (dest_col == src_col - 2)){
+    //     return true;
+    // }
+    // //wu
+    // else if((dest_row == src_row - 1) && (dest_col == src_col - 2)){
+    //     return true;
+    // }
+    // //sl
+    // else if((dest_row == src_row + 2) && (dest_col == src_col - 1)){
+    //     return true;
+    // }
+    // //sr
+    // else if((dest_row == src_row + 2) && (dest_col == src_col + 1)){
+    //     return true;
+    // }
+    // //eu
+    // else if((dest_row == src_row - 1) && (dest_col == src_col + 2)){
+    //     return true;
+    // }
+    // //ed
+    // else if((dest_row == src_row + 1) && (dest_col == src_col + 2)){
+    //     return true;
+    // }
+    // else{
+    //     return false;
+    // }
 }
 
 bool is_valid_bishop_move(int src_row, int src_col, int dest_row, int dest_col, ChessGame *game) {
