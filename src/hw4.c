@@ -321,10 +321,10 @@ int parse_move(const char *move, ChessMove *parsed_move) {
     }
 
     //PARSE_OUT_OF_BOUNDS
-    if((move[1] < 1) || (move[1] > 8)){
+    if((move[1] < '1') || (move[1] > '8')){
         return PARSE_MOVE_OUT_OF_BOUNDS;
     }
-    if((move[3] < 1) || (move[3] > 8)){
+    if((move[3] < '1') || (move[3] > '8')){
         return PARSE_MOVE_OUT_OF_BOUNDS;
     }
 
