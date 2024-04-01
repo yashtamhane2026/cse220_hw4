@@ -386,7 +386,7 @@ bool out_of_board(int src_row, int src_col, int dest_row, int dest_col){
     else if((dest_row < 0 || dest_col < 0)){
         return true;
     }
-    else if((src_row < 0 || src_col < 0)){
+    else if((src_row > 7 || src_col > 7)){
         return true;
     }
     else if((src_row < 0 || src_col < 0)){
