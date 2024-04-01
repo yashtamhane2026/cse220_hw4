@@ -209,51 +209,26 @@ bool is_valid_bishop_move(int src_row, int src_col, int dest_row, int dest_col, 
 }
 
 bool is_valid_queen_move(int src_row, int src_col, int dest_row, int dest_col, ChessGame *game) {
-    if((src_row != dest_row)){
-        if((src_col != dest_col)){
-            if(no_interrupt_diagonal(src_row, src_col, dest_row, dest_col, game)){
-                return true;
-            }
-            return false;
-        }
+    //check out of board
+    if(out_of_board(src_row, src_col, dest_row, dest_col)){
+        return false;
+    }
+    //check if piece interrupts (news, ne, nw, se, sw)
+    if((src_row == dest_row) || (src_col == dest_col)){
         if(no_interrupt_plus(src_row, src_col, dest_row, dest_col, game)){
             return true;
         }
         return false;
     }
-    if((src_col) != (dest_col)){
-        if((src_row) != (dest_row)){
-            if(no_interrupt_diagonal(src_row, src_col, dest_row, dest_col, game)){
-                return true;
-            }
-            return false;
-        }
-        if(no_interrupt_plus(src_row, src_col, dest_row, dest_col, game)){
+    else if((src_row != dest_row) && (src_col != dest_col)){
+        if(no_interrupt_diagonal(src_row, src_col, dest_row, dest_col, game)){
             return true;
         }
         return false;
     }
-    return false;
-    // //check out of board
-    // if(out_of_board(src_row, src_col, dest_row, dest_col)){
-    //     return false;
-    // }
-    // //check if piece interrupts (news, ne, nw, se, sw)
-    // if((src_row == dest_row) || (src_col == dest_col)){
-    //     if(no_interrupt_plus(src_row, src_col, dest_row, dest_col, game)){
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    // else if((src_row != dest_row) && (src_col != dest_col)){
-    //     if(no_interrupt_diagonal(src_row, src_col, dest_row, dest_col, game)){
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    // else{
-    //     return false;
-    // }
+    else{
+        return false;
+    }
 }
 
 bool is_valid_king_move(int src_row, int src_col, int dest_row, int dest_col) {
@@ -334,9 +309,54 @@ void fen_to_chessboard(const char *fen, ChessGame *game) {
 }
 
 int parse_move(const char *move, ChessMove *parsed_move) {
-    (void)move;
-    (void)parsed_move;
-    return -999;
+    //PARSE_MOVE_INVALID_FORMAT
+    if(((int)strlen(move) != 4) && ((int)strlen(move) != 5)){
+        return PARSE_MOVE_INVALID_FORMAT;
+    }
+    if((move[0] < 'a') || (move[0] > 'h')){
+        return PARSE_MOVE_INVALID_FORMAT;
+    }
+    if((move[2] < 'a') || (move[2] > 'h')){
+        return PARSE_MOVE_INVALID_FORMAT;
+    }
+
+    //PARSE_OUT_OF_BOUNDS
+    if((move[1] < 1) || (move[1] > 8)){
+        return PARSE_MOVE_OUT_OF_BOUNDS;
+    }
+    if((move[3] < 1) || (move[3] > 8)){
+        return PARSE_MOVE_OUT_OF_BOUNDS;
+    }
+
+    //PARSE_MOVE_INVALID_DESTINATION
+    if((int)strlen(move) == 5){
+        if((move[3] != '1') && (move[3] != '8')){
+            return PARSE_MOVE_INVALID_DESTINATION;
+        }
+    }
+
+    //PARSE_MOVE_INVALID_PROMOTION
+    if((int)strlen(move) == 5){
+        if((move[4] != 'q') && (move[4] != 'r') && (move[4] != 'b') && (move[4] != 'n')){
+            return PARSE_MOVE_INVALID_PROMOTION;
+        }
+    }
+
+    //placing
+    parsed_move->startSquare[0] = move[0];
+    parsed_move->startSquare[1] = move[1];
+    parsed_move->startSquare[2] = '\0';
+
+    parsed_move->endSquare[0] = move[2];
+    parsed_move->endSquare[1] = move[3];
+    if((int)strlen(move)==5){
+        parsed_move->endSquare[2] = move[4];
+        parsed_move->endSquare[3] = '\0';
+    }
+    else{
+        parsed_move->endSquare[2] = '\0';
+    }
+    return 0;
 }
 
 int make_move(ChessGame *game, ChessMove *move, bool is_client, bool validate_move) {
