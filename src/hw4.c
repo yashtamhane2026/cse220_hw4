@@ -232,10 +232,13 @@ bool is_valid_queen_move(int src_row, int src_col, int dest_row, int dest_col, C
         }
         return false;
     }
-    else{
+    else if((src_row != dest_row) && (src_col != dest_col)){
         if(no_interrupt_diagonal(src_row, src_col, dest_row, dest_col, game)){
             return true;
         }
+        return false;
+    }
+    else{
         return false;
     }
 }
