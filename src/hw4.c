@@ -62,8 +62,8 @@ int forward_dot_count(int row, int col, ChessGame *game){
 
 void chessboard_to_fen(char fen[], ChessGame *game) {
     int g = 0;
-    for(int i = 0; i<8; i++){
-        for(int j = 0; j<8; j++){
+    for(int i = 0; i<8; i++,g++){
+        for(int j = 0; j<8; j++,g++){
             if((game->chessboard[i][j]) == '.'){
                 int count = forward_dot_count(i, j, game);
                 fen[g] = count + '0';
@@ -77,6 +77,7 @@ void chessboard_to_fen(char fen[], ChessGame *game) {
         }
         fen[g] = '/';
     }
+    g = g - 1;
     fen[g] = ' ';
     g = g + 1;
     if((game->currentPlayer) == 0){
@@ -85,6 +86,8 @@ void chessboard_to_fen(char fen[], ChessGame *game) {
     if((game->currentPlayer) == 1){
         fen[g] = 'b';
     }
+    g = g + 1;
+    fen[g] = '\0';
 }
 
 bool is_valid_pawn_move(char piece, int src_row, int src_col, int dest_row, int dest_col, ChessGame *game) {
