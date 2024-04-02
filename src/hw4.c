@@ -47,9 +47,44 @@ void initialize_game(ChessGame *game) {
     game->currentPlayer = 0; //0 for White and 1 for black
 }
 
+int forward_dot_count(int row, int col, ChessGame *game){
+    int count = 0;
+    for(int i = col; i<8; i++){
+        if((game->chessboard[row][i])=='.'){
+            count = count + 1;
+        }
+        else{
+            break;
+        }
+    }
+    return count;
+}
+
 void chessboard_to_fen(char fen[], ChessGame *game) {
-    (void)fen;
-    (void)game;
+    int g = 0;
+    for(int i = 0; i<8; i++){
+        for(int j = 0; j<8; j++){
+            if((game->chessboard[i][j]) == '.'){
+                int count = forward_dot_count(i, j, game);
+                fen[g] = count + '0';
+                g = g + 1;
+                j = j + count;
+            }
+            if(j>=8){
+                break;
+            }
+            fen[g] = game->chessboard[i][j];
+        }
+        fen[g] = '/';
+    }
+    fen[g] = ' ';
+    g = g + 1;
+    if((game->currentPlayer) == 0){
+        fen[g] = 'w';
+    }
+    if((game->currentPlayer) == 1){
+        fen[g] = 'b';
+    }
 }
 
 bool is_valid_pawn_move(char piece, int src_row, int src_col, int dest_row, int dest_col, ChessGame *game) {
