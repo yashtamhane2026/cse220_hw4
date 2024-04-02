@@ -248,13 +248,13 @@ bool is_valid_bishop_move(int src_row, int src_col, int dest_row, int dest_col, 
 
 bool is_valid_queen_move(int src_row, int src_col, int dest_row, int dest_col, ChessGame *game) {
     //check out of board
-    // if(out_of_board(src_row, src_col, dest_row, dest_col)){
-    //     return false;
-    // }
+    if(out_of_board(src_row, src_col, dest_row, dest_col)){
+        return false;
+    }
     //check if piece interrupts (news, ne, nw, se, sw)
-    // if((is_valid_rook_move(src_row, src_col, dest_row, dest_col, game)) || (is_valid_bishop_move(src_row, src_col, dest_row, dest_col, game))){
-    //     return true;
-    // }
+    if((is_valid_rook_move(src_row, src_col, dest_row, dest_col, game)) || (is_valid_bishop_move(src_row, src_col, dest_row, dest_col, game))){
+        return true;
+    }
     // if((src_row == dest_row) || (src_col == dest_col)){
     //     if(no_interrupt_plus(src_row, src_col, dest_row, dest_col, game)){
     //         return true;
@@ -550,7 +550,7 @@ bool no_interrupt_plus(int src_row, int src_col, int dest_row, int dest_col, Che
 bool no_interrupt_diagonal(int src_row, int src_col, int dest_row, int dest_col, ChessGame *game){
     //4 cases
     //nw
-    if((dest_row <= src_row - 1) && (dest_col <= src_col - 1)){
+    if((dest_row < src_row) && (dest_col < src_col)){
         for(int i = src_row-1, j = src_col-1; i>dest_row && j>dest_col; i--, j--){
             if(game->chessboard[i][j] != '.'){
                 //if any word interrupts
@@ -560,7 +560,7 @@ bool no_interrupt_diagonal(int src_row, int src_col, int dest_row, int dest_col,
         return true;
     }
     //sw
-    else if((dest_row >= src_row + 1) && (dest_col <= src_col - 1)){
+    else if((dest_row > src_row) && (dest_col < src_col)){
         for(int i = src_row+1, j = src_col-1; i<dest_row && j>dest_col; i++, j--){
             if(game->chessboard[i][j] != '.'){
                 //if any word interrupts
@@ -570,7 +570,7 @@ bool no_interrupt_diagonal(int src_row, int src_col, int dest_row, int dest_col,
         return true;
     }
     //ne
-    else if((dest_row <= src_row - 1) && (dest_col >= src_col + 1)){
+    else if((dest_row < src_row) && (dest_col > src_col)){
         for(int i = src_row-1, j = src_col+1; i>dest_row && j<dest_col; i--, j++){
             if(game->chessboard[i][j] != '.'){
                 //if any word interrupts
@@ -580,7 +580,7 @@ bool no_interrupt_diagonal(int src_row, int src_col, int dest_row, int dest_col,
         return true;
     }
     //se
-    else if((dest_row >= src_row + 1) && (dest_col >= src_col + 1)){
+    else if((dest_row > src_row) && (dest_col > src_col)){
         for(int i = src_row+1, j = src_col+1; i<dest_row && j<dest_col; i++, j++){
             if(game->chessboard[i][j] != '.'){
                 //if any word interrupts
