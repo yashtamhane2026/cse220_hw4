@@ -248,9 +248,9 @@ bool is_valid_bishop_move(int src_row, int src_col, int dest_row, int dest_col, 
 
 bool is_valid_queen_move(int src_row, int src_col, int dest_row, int dest_col, ChessGame *game) {
     //check out of board
-    if(out_of_board(src_row, src_col, dest_row, dest_col)){
-        return false;
-    }
+    // if(out_of_board(src_row, src_col, dest_row, dest_col)){
+    //     return false;
+    // }
     //check if piece interrupts (news, ne, nw, se, sw)
     if((is_valid_rook_move(src_row, src_col, dest_row, dest_col, game)) || (is_valid_bishop_move(src_row, src_col, dest_row, dest_col, game))){
         return true;
