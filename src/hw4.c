@@ -304,8 +304,28 @@ bool is_valid_move(char piece, int src_row, int src_col, int dest_row, int dest_
 }
 
 void fen_to_chessboard(const char *fen, ChessGame *game) {
-    (void)fen;
-    (void)game;
+    int g = 0;
+    for(int i = 0; i<8; i++,g++){//rows in game
+        for(int j = 0; j<8; j++,g++){//column in game
+            if((fen[g] >= '1') && (fen[g] <= '8')){
+                int k = fen[g] - '0';
+                while(k>0){
+                    game->chessboard[i][j] = '.';
+                    k = k - 1;
+                    j = j + 1;
+                }
+                j = j - 1;
+                continue;
+            }
+            game->chessboard[i][j] = fen[g];
+        }
+    }
+    if(fen[g] == 'b'){
+        game->currentPlayer = 1;
+    }
+    if(fen[g] == 'w'){
+        game->currentPlayer = 0;
+    }
 }
 
 int parse_move(const char *move, ChessMove *parsed_move) {
