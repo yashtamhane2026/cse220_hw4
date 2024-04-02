@@ -251,6 +251,7 @@ bool is_valid_queen_move(int src_row, int src_col, int dest_row, int dest_col, C
     if(out_of_board(src_row, src_col, dest_row, dest_col)){
         return false;
     }
+   
     //check if piece interrupts (news, ne, nw, se, sw)
     if((is_valid_rook_move(src_row, src_col, dest_row, dest_col, game)) || (is_valid_bishop_move(src_row, src_col, dest_row, dest_col, game))){
         return true;
@@ -556,6 +557,12 @@ bool no_interrupt_diagonal(int src_row, int src_col, int dest_row, int dest_col,
     if((out_of_board(src_row, src_col, dest_row, dest_col))){
         return false;
     }
+
+    if(((abs(dest_row-src_row))!=abs(dest_col-src_col))){
+        return false;
+    }
+
+
     //4 cases
     //nw
     if((dest_row < src_row) && (dest_col < src_col)){
