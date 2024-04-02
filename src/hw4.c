@@ -252,9 +252,9 @@ bool is_valid_queen_move(int src_row, int src_col, int dest_row, int dest_col, C
     //     return false;
     // }
     //check if piece interrupts (news, ne, nw, se, sw)
-    if((is_valid_rook_move(src_row, src_col, dest_row, dest_col, game)) || (is_valid_bishop_move(src_row, src_col, dest_row, dest_col, game))){
-        return true;
-    }
+    // if((is_valid_rook_move(src_row, src_col, dest_row, dest_col, game)) || (is_valid_bishop_move(src_row, src_col, dest_row, dest_col, game))){
+    //     return true;
+    // }
     // if((src_row == dest_row) || (src_col == dest_col)){
     //     if(no_interrupt_plus(src_row, src_col, dest_row, dest_col, game)){
     //         return true;
@@ -270,6 +270,11 @@ bool is_valid_queen_move(int src_row, int src_col, int dest_row, int dest_col, C
     // else{
     //     return false;
     // }
+    (void) src_row;
+    (void) src_col;
+    (void) dest_row;
+    (void) dest_col;
+    (void) game;
     return false;
 }
 
