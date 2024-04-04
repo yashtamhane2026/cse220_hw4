@@ -430,12 +430,85 @@ int parse_move(const char *move, ChessMove *parsed_move) {
 int make_move(ChessGame *game, ChessMove *move, bool is_client, bool validate_move) {
 
     
+     if (validate_move) {
+        // error checks go here
+        //MOVING_OUT_OF_TURN
+        if(game->currentPlayer == 0){
+            if(is_client == false){
+                return MOVE_OUT_OF_TURN;
+            }
+        }
+        if(game->currentPlayer == 1){
+            if(is_client == true){
+                return MOVE_OUT_OF_TURN;
+            }
+        }
+        //MOVE_NOTHING
+        // a=0, b=1, c=2, d=3, e=4, f=5, g=6, h=7
+        // 8 - (move[1] - '0')
+        if((game->chessboard[8 - (move->startSquare[1] - '0')][(move->startSquare[0])-'a'])=='.'){
+            return MOVE_NOTHING;
+        }
+        //MOVE_WRONG_COLOR
+        if(is_client == true){
+            if(islower((game->chessboard[8 - (move->startSquare[1] - '0')][(move->startSquare[0])-'a']))){
+                return MOVE_WRONG_COLOR;
+            }
+        }
+        if(is_client == false){
+            if(isupper((game->chessboard[8 - (move->startSquare[1] - '0')][(move->startSquare[0])-'a']))){
+                return MOVE_WRONG_COLOR;
+            }
+        }
+        //MOVE_SUS
+        if(is_client == true){
+            if(isupper((game->chessboard[8 - (move->endSquare[1] - '0')][(move->endSquare[0])-'a']))){
+                return MOVE_SUS;
+            }
+        }
+        if(is_client == false){
+            if(islower((game->chessboard[8 - (move->endSquare[1] - '0')][(move->endSquare[0])-'a']))){
+                return MOVE_SUS;
+            }
+        }
+        //MOVE_NOT_A_PAWN
+        if((int)strlen(move->endSquare) == 3){
+            if((game->chessboard[8 - (move->endSquare[1] - '0')][(move->endSquare[0])-'a']) != 'P'){
+                if((game->chessboard[8 - (move->endSquare[1] - '0')][(move->endSquare[0])-'a']) != 'p'){
+                    return MOVE_NOT_A_PAWN;
+                }
+            }
+        }
+        //MOVE_MISSING_PROMOTION
+        if((int)strlen(move->endSquare) == 2){
+            if(((move->endSquare[1] - '0') == 1) || ((move->endSquare[1] - '0') == 8)){
+                if((game->chessboard[8 - (move->endSquare[1] - '0')][(move->endSquare[0])-'a']) == 'P'){
+                    return MOVE_MISSING_PROMOTION;
+                }
+                if((game->chessboard[8 - (move->endSquare[1] - '0')][(move->endSquare[0])-'a']) == 'p'){
+                    return MOVE_MISSING_PROMOTION;
+                }
+            }
+        }
+        //MOVE_WRONG
+        int src_row = 8 - (move->startSquare[1] - '0');
+        int src_col = (move->startSquare[0])-'a';
+        int dest_row = 8 - (move->endSquare[1] - '0');
+        int dest_col = (move->endSquare[0])-'a';
+        char piece = (game->chessboard[8 - (move->startSquare[1] - '0')][(move->startSquare[0])-'a']); 
+        if(is_valid_move(piece, src_row, src_col, dest_row, dest_col, game) == false){
+            return MOVE_WRONG;
+        }
+    }
+    //if 4 length
+    // if((int)strlen(move->endSquare)){
 
-    (void)game;
-    (void)move;
-    (void)is_client;
-    (void)validate_move;
-    return -999;
+    // }
+
+
+    //if 5 length
+
+    return 0;
 }
 
 int send_command(ChessGame *game, const char *message, int socketfd, bool is_client) {
