@@ -625,41 +625,33 @@ int receive_command(ChessGame *game, const char *message, int socketfd, bool is_
 }
 
 int save_game(ChessGame *game, const char *username, const char *db_filename) {
-
     //checking username
     for(int i = 0; i<(int)strlen(username); i++){
         if(username[i] == ' '){
-            printf("Invalid username.\n");
             return -1;
         }
     }
     if((int)strlen(username) == 0){
         return -1;
     }
-
-    char fen[74];
+    char fen[BUFFER_SIZE];
     chessboard_to_fen(fen, game);
-
-    FILE *file = fopen(db_filename, "w");
-
+    FILE *file = fopen(db_filename, "a");
     fprintf(file, "%s:", username);
     fprintf(file, "%s\n", fen);
-
     fclose(file);
-
     return 0;
 }
 
 int load_game(ChessGame *game, const char *username, const char *db_filename, int save_number) {
-
     FILE *file = fopen(db_filename, "r");
     if(file == NULL){
         return -1;
     }
-
     char c;
     char temp_arr[BUFFER_SIZE];
-    int line_number = 1, i = 0, j = 0;;
+    int line_number = 1, i = 0, j = 0;
+    fseek(file, 0, SEEK_SET);
     while((c=fgetc(file))!=EOF){
         if(c=='\n'){
             line_number = line_number + 1;
@@ -668,26 +660,27 @@ int load_game(ChessGame *game, const char *username, const char *db_filename, in
         if(c==username[0]){
             i=1;
             while((c=fgetc(file))==username[i++]){
-                if(c==':'){
-                    if(line_number==save_number){
-                        c = fgetc(file);
-                        j = 0;
-                        while((c=fgetc(file))!='\n'){
+                if(i == ((int)strlen(username))){
+                    c = fgetc(file);
+                    if(c==':'){
+                        if(line_number==save_number){
+                            c = fgetc(file);
+                            j = 0;
                             temp_arr[j] = c;
+                            j = j + 1;
+                            while((c=fgetc(file))!='\n'){
+                                temp_arr[j] = c;
+                                j = j + 1;
+                            }
+                            fen_to_chessboard(temp_arr, game);
+                            return 0;
                         }
-                        fen_to_chessboard(temp_arr, game);
-                        return 1;
                     }
                 }
             }
         }
     }
     return -1;
-    // (void)username;
-    // (void)db_filename;
-    // (void)save_number;
-    // (void)game;
-    // return -999;
 }
 
 void display_chessboard(ChessGame *game) {
