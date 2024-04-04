@@ -256,26 +256,6 @@ bool is_valid_queen_move(int src_row, int src_col, int dest_row, int dest_col, C
     if((is_valid_rook_move(src_row, src_col, dest_row, dest_col, game)) || (is_valid_bishop_move(src_row, src_col, dest_row, dest_col, game))){
         return true;
     }
-    // if((src_row == dest_row) || (src_col == dest_col)){
-    //     if(no_interrupt_plus(src_row, src_col, dest_row, dest_col, game)){
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    // else if((src_row != dest_row) && (src_col != dest_col)){
-    //     if(no_interrupt_diagonal(src_row, src_col, dest_row, dest_col, game)){
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    // else{
-    //     return false;
-    // }
-    (void) src_row;
-    (void) src_col;
-    (void) dest_row;
-    (void) dest_col;
-    (void) game;
     return false;
 }
 
@@ -473,8 +453,8 @@ int make_move(ChessGame *game, ChessMove *move, bool is_client, bool validate_mo
         }
         //MOVE_NOT_A_PAWN
         if((int)strlen(move->endSquare) == 3){
-            if((game->chessboard[8 - (move->endSquare[1] - '0')][(move->endSquare[0])-'a']) != 'P'){
-                if((game->chessboard[8 - (move->endSquare[1] - '0')][(move->endSquare[0])-'a']) != 'p'){
+            if((game->chessboard[8 - (move->startSquare[1] - '0')][(move->startSquare[0])-'a']) != 'P'){
+                if((game->chessboard[8 - (move->startSquare[1] - '0')][(move->startSquare[0])-'a']) != 'p'){
                     return MOVE_NOT_A_PAWN;
                 }
             }
@@ -501,13 +481,130 @@ int make_move(ChessGame *game, ChessMove *move, bool is_client, bool validate_mo
         }
     }
     //if 4 length
-    // if((int)strlen(move->endSquare)){
+    if((int)strlen(move->endSquare) == 2){
+        //Capture 
+        int src_row = 8 - (move->startSquare[1] - '0');
+        int src_col = (move->startSquare[0])-'a';
+        int dest_row = 8 - (move->endSquare[1] - '0');
+        int dest_col = (move->endSquare[0])-'a';
+        char temp;
+        if(game->chessboard[dest_row][dest_col] != '.'){
+            temp = game->chessboard[dest_row][dest_col];
+            //putting in capturedPieces
+            game->capturedPieces[game->capturedCount] = temp;
+            //updating capturedCOunt
+            game->capturedCount = game->capturedCount + 1;
+            //updating dest piece
+            game->chessboard[dest_row][dest_col] = game->chessboard[src_row][src_col];
+            //updating src piece
+            game->chessboard[src_row][src_col] = '.';
+            //updating moveCount
+            game->moveCount = game->moveCount + 1;
+            //updating currentPlayer
+            if(is_client == true){
+                game->currentPlayer = 1;
+            }   
+            else{
+                game->currentPlayer = 0;
+            }
+        }
+        //No capture
+        else{   
+            //updating dest piece
+            game->chessboard[dest_row][dest_col] = game->chessboard[src_row][src_col];
+            //updating src piece
+            game->chessboard[src_row][src_col] = '.';
+            //updating moveCount
+            game->moveCount = game->moveCount + 1;
+            //updating currentPlayer
+            if(is_client == true){
+                game->currentPlayer = 1;
+            }   
+            else{
+                game->currentPlayer = 0;
+            }
+        }
 
-    // }
-
-
-    //if 5 length
-
+    }
+    //if length is 5
+    else{
+        //Capture
+        int src_row = 8 - (move->startSquare[1] - '0');
+        int src_col = (move->startSquare[0])-'a';
+        int dest_row = 8 - (move->endSquare[1] - '0');
+        int dest_col = (move->endSquare[0])-'a';
+        char temp;
+        if(game->chessboard[dest_row][dest_col] != '.'){
+            temp = game->chessboard[dest_row][dest_col];
+            //putting in capturedPieces
+            game->capturedPieces[game->capturedCount] = temp;
+            //updating capturedCOunt
+            game->capturedCount = game->capturedCount + 1;
+            //updating dest piece
+            game->chessboard[dest_row][dest_col] = game->chessboard[src_row][src_col];
+            //updatind src piece
+            game->chessboard[src_row][src_col] = '.';
+            //updating moveCount
+            game->moveCount = game->moveCount + 1;
+            //updating currentPlayer
+            if(is_client == true){
+                game->currentPlayer = 1;
+            }   
+            else{
+                game->currentPlayer = 0;
+            }
+            //PROMOTION
+            //for white
+            if(is_client == true){
+                char promotion = move->endSquare[2];
+                if(game->chessboard[dest_row][dest_col] == 'P'){
+                    promotion = toupper(promotion);
+                    game->chessboard[dest_row][dest_col] = promotion;
+                }
+            }
+            //for black
+            else{
+                char promotion = move->endSquare[2];
+                if(game->chessboard[dest_row][dest_col] == 'p'){
+                    promotion = tolower(promotion);
+                    game->chessboard[dest_row][dest_col] = promotion;
+                }
+            }
+        }
+        //no capture
+        else{
+            //updating dest piece
+            game->chessboard[dest_row][dest_col] = game->chessboard[src_row][src_col];
+            //updating src piece
+            game->chessboard[src_row][src_col] = '.';
+            //updating moveCount
+            game->moveCount = game->moveCount + 1;
+            //updating currentPlayer
+            if(is_client == true){
+                game->currentPlayer = 1;
+            }   
+            else{
+                game->currentPlayer = 0;
+            }
+            //PROMOTION
+            //for white
+            if(is_client == true){
+                char promotion = move->endSquare[2];
+                if(game->chessboard[dest_row][dest_col] == 'P'){
+                    promotion = toupper(promotion);
+                    game->chessboard[dest_row][dest_col] = promotion;
+                }
+            }
+            //for black
+            else{
+                char promotion = move->endSquare[2];
+                if(game->chessboard[dest_row][dest_col] == 'p'){
+                    promotion = tolower(promotion);
+                    game->chessboard[dest_row][dest_col] = promotion;
+                }
+            }
+        }
+    }
     return 0;
 }
 
