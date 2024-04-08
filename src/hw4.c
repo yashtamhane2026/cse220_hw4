@@ -609,19 +609,192 @@ int make_move(ChessGame *game, ChessMove *move, bool is_client, bool validate_mo
 }
 
 int send_command(ChessGame *game, const char *message, int socketfd, bool is_client) {
-    (void)game;
-    (void)message;
-    (void)socketfd;
-    (void)is_client;
-    return -999;
+
+    //move
+    if(strncasecmp(message, "/move", 5)==0){
+        char temp[BUFFER_SIZE];
+        int i = 6, j = 0;
+        while(message[i] != '\0'){
+            temp[j] = message[i];
+            i = i + 1;
+            j = j + 1;
+        }
+        temp[j] = '\0';
+        int ret_fun = parse_move(temp, game->moves);
+        if (ret_fun == 0){
+            int current_player = game->currentPlayer;
+            if(current_player == 0){
+                current_player = 1;
+            }
+            else{
+                current_player = 0;
+            }
+            int ret = make_move(game, game->moves, current_player, true);
+            if(ret == 0){
+                send(socketfd, message, sizeof(message), 0);
+                return COMMAND_MOVE;
+            }
+            else{
+                return COMMAND_ERROR;
+            }
+        }
+        else{
+            return COMMAND_ERROR;
+        }
+    }
+    else if(strncasecmp(message, "/forfeit", 8)==0){
+        send(socketfd, message, sizeof(message), 0);
+        return COMMAND_FORFEIT;
+    }
+    else if(strncasecmp(message, "/chessboard", 11)==0){
+        display_chessboard(game);
+        return COMMAND_DISPLAY;
+    }
+    else if(strncasecmp(message, "/import", 7)==0){
+        if(is_client == false){
+            char temp[BUFFER_SIZE];
+            int i = 8, j = 0;
+            while(message[i] != 0){
+                temp[j] = message[i];
+                i = i + 1;
+                j = j + 1;
+            }
+            temp[j] = '\0';
+            fen_to_chessboard(temp, game);
+            send(socketfd, message, sizeof(message), 0);
+            return COMMAND_IMPORT;
+        }
+        //THIS WAS NOT MENTIONED IN HW
+        return COMMAND_ERROR;
+    }
+    else if(strncasecmp(message, "/load", 5)==0){
+        char temp[BUFFER_SIZE];
+        int i = 6, j = 0;
+        while(message[i] != ' '){
+            temp[j] = message[i];
+            i = i + 1;
+            j = j + 1;
+        }
+        temp[j] = '\0';
+        char temp_number[BUFFER_SIZE];
+        int m = 6 + (int)strlen(temp), n = 0;
+        int temp_num;
+        while(message[m] != '\n'){
+            temp_number[n] = message[m];
+            m = m + 1;
+            n = n + 1;
+        }
+        temp_number[n] = '\0';
+        temp_num = atoi(temp_number);
+        int ret = load_game(game, temp, "game_database.txt", temp_num);
+        if(ret != 0){
+            return COMMAND_ERROR;
+        }
+        send(socketfd, message, sizeof(message), 0);
+        return COMMAND_LOAD;
+    }
+    else if(strncasecmp(message, "/save", 5)==0){
+        char temp[BUFFER_SIZE];
+        int i = 6, j = 0;
+        while(message[i] != '\0'){
+            temp[j] = message[i];
+            i = i + 1;
+            j = j + 1;
+        }
+        temp[j] = '\0';
+        int ret = save_game(game, temp, "game_database.txt");
+        if(ret != 0){
+            return COMMAND_ERROR;
+        }
+        else{
+            return COMMAND_SAVE;
+        }
+    }
+    else{
+        return COMMAND_UNKNOWN;
+    }
 }
 
 int receive_command(ChessGame *game, const char *message, int socketfd, bool is_client) {
-    (void)game;
-    (void)message;
-    (void)socketfd;
-    (void)is_client;
-    return -999;
+    //move
+    if(strncasecmp(message, "/move", 5)==0){
+        char temp[BUFFER_SIZE];
+        int i = 6, j = 0;
+        while(message[i]!='\0'){
+            temp[j] = message[i];
+            i = i + 1;
+            j = j + 1;
+        }
+        temp[j] = '\0';
+        int ret_fun = parse_move(temp, game->moves);
+        if (ret_fun == 0){
+            int new_player = game->currentPlayer;
+            if(new_player == 0){
+                new_player = 1;
+            }
+            else{
+                new_player = 0;
+            }
+            make_move(game, game->moves, new_player, false);
+            send(socketfd, message, sizeof(message), 0);
+            return COMMAND_MOVE;
+        }
+        else{
+            return COMMAND_ERROR;
+        }
+    }
+    //forfeit
+    else if(strncasecmp(message, "/forfeit", 8)==0){
+        close(socketfd);
+        return COMMAND_FORFEIT;
+    }
+    else if(strncasecmp(message, "/import", 7)==0){
+        if(is_client == true){
+            char temp[BUFFER_SIZE];
+            int i = 8, j = 0;
+            while(message[i] != 0){
+                temp[j] = message[i];
+                i = i + 1;
+                j = j + 1;
+            }
+            temp[j] = '\0';
+            fen_to_chessboard(temp, game);
+            send(socketfd, message, sizeof(message), 0);
+            return COMMAND_IMPORT;
+        }
+        //THIS WAS NOT MENTIONED IN HW
+        return COMMAND_ERROR;
+    }
+    else if(strncasecmp(message, "/load", 5)==0){
+        char temp[BUFFER_SIZE];
+        int i = 6, j = 0;
+        while(message[i] != ' '){
+            temp[j] = message[i];
+            i = i + 1;
+            j = j + 1;
+        }
+        temp[j] = '\0';
+        char temp_number[BUFFER_SIZE];
+        //ADDED +1
+        int m = 6 + (int)strlen(temp), n = 0;
+        int temp_num;
+        while(m<(int)strlen(message)){
+            temp_number[n] = message[m];
+            m = m + 1;
+            n = n + 1;
+        }
+        temp_number[n] = '\0';
+        temp_num = atoi(temp_number);
+        int ret = load_game(game, temp, "game_database.txt", temp_num);
+        if(ret != 0){
+            return COMMAND_ERROR;
+        }
+        send(socketfd, message, sizeof(message), 0);
+        return COMMAND_LOAD;
+    }
+    else{
+        return -1;
+    }
 }
 
 int save_game(ChessGame *game, const char *username, const char *db_filename) {
